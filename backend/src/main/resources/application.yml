@@ -1,0 +1,141 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: load-balancing-service
+  
+  # Database Configuration - H2 (temporary)
+  datasource:
+    url: jdbc:h2:mem:loadbalancing;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+  
+  # H2 Console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+  
+  # Flyway Migration
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  
+  # Redis Configuration (for leader election)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 5000
+  
+  # Jackson Configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-signing-must-be-at-least-32-chars}
+  expiration-hours: 24
+
+# AWS Configuration
+aws:
+  region: ${AWS_REGION:us-east-1}
+  # Credentials are obtained via IAM Role + STS AssumeRole
+  # NO access keys stored here
+  sts:
+    session-duration-seconds: 3600
+    session-name-prefix: LoadBalancingPlatform
+
+# Control Loop Configuration
+loadbalancing:
+  control:
+    loop:
+      enabled: false  # Disabled for development (no Redis)
+      interval: 30000  # 30 seconds
+    leader-election:
+      enabled: false  # Disabled for development (no Redis)
+      ttl-seconds: 30
+      renewal-seconds: 10
+  
+  # Scaling Guardrails
+  guardrails:
+    max-scale-out-per-cycle: 5
+    max-scale-in-per-cycle: 2
+    scale-out-cooldown-minutes: 5
+    scale-in-cooldown-minutes: 10
+    min-on-demand-instances: 2
+    max-spot-ratio: 0.70
+  
+  # Observability
+  observability:
+    metrics-retention-days: 30
+    cloudwatch-period-seconds: 60
+
+# Actuator & Metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.cloudplatform.loadbalancing: DEBUG
+    software.amazon.awssdk: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      aws-api:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 5
+  retry:
+    instances:
+      aws-api:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - software.amazon.awssdk.core.exception.SdkServiceException

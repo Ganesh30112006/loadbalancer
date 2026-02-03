@@ -1,0 +1,70 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+target/
+build/
+dist/
+*.class
+*.jar
+*.war
+*.ear
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.pnpm-store/
+.npm/
+*.log
+
+# Environment files - never commit secrets
+.env
+.env.local
+.env.*.local
+*.local.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Package lock files (optional - some teams commit these)
+# package-lock.json
+# pom.xml.versionsBackup
