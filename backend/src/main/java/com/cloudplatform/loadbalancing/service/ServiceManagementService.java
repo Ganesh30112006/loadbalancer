@@ -149,8 +149,8 @@ public class ServiceManagementService {
         
         service = serviceRepository.save(service);
 
-        auditService.logServiceAction(service, "AUTOMATION_ENABLED", 
-                String.format("Automation: %s, Scaling: %s, Deployment: %s",
+        auditService.logServiceAction(service, "AUTOMATION_ENABLED",
+                "Automation: %s, Scaling: %s, Deployment: %s".formatted(
                         settings.automationEnabled, settings.scalingEnabled, settings.deploymentEnabled), 
                 userId);
 

@@ -80,7 +80,7 @@ public class HybridControlLoop {
         }
 
         cycleCounter++;
-        String cycleId = String.format("cycle-%d-%d", System.currentTimeMillis(), cycleCounter);
+        String cycleId = "cycle-%d-%d".formatted(System.currentTimeMillis(), cycleCounter);
         log.debug("Starting control loop cycle: {}", cycleId);
 
         try {
@@ -230,7 +230,7 @@ public class HybridControlLoop {
         for (PlannedAction action : plan.actions) {
             try {
                 boolean actionSuccess = infrastructureExecutor.executeAction(service, action);
-                results.add(String.format("%s %s: %s", 
+                results.add("%s %s: %s".formatted(
                         action.actionType, action.region, actionSuccess ? "SUCCESS" : "FAILED"));
                 
                 if (!actionSuccess) allSuccess = false;
@@ -241,7 +241,7 @@ public class HybridControlLoop {
                 }
 
             } catch (Exception e) {
-                results.add(String.format("%s %s: ERROR - %s", 
+                results.add("%s %s: ERROR - %s".formatted(
                         action.actionType, action.region, e.getMessage()));
                 allSuccess = false;
             }

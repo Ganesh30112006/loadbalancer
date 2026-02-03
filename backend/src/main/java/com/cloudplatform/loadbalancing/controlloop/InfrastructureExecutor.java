@@ -221,7 +221,7 @@ public class InfrastructureExecutor {
                 return new AsgState(region.getAsgName(), 0, 0, 0, 0, 0);
             }
 
-            AutoScalingGroup asg = response.autoScalingGroups().get(0);
+            AutoScalingGroup asg = response.autoScalingGroups().getFirst();
             
             int healthy = (int) asg.instances().stream()
                     .filter(i -> "Healthy".equals(i.healthStatus()) && 

@@ -94,31 +94,31 @@ public class GuardrailService {
 
         // Check minimum instances
         if (newCapacity < ABSOLUTE_MIN_INSTANCES) {
-            violations.add(String.format("Region %s: Cannot scale below absolute minimum of %d instances",
+            violations.add("Region %s: Cannot scale below absolute minimum of %d instances".formatted(
                     action.region(), ABSOLUTE_MIN_INSTANCES));
         } else if (newCapacity < minInstances) {
-            violations.add(String.format("Region %s: Cannot scale below policy minimum of %d instances",
+            violations.add("Region %s: Cannot scale below policy minimum of %d instances".formatted(
                     action.region(), minInstances));
         }
 
         // Check maximum instances
         if (newCapacity > ABSOLUTE_MAX_INSTANCES) {
-            violations.add(String.format("Region %s: Cannot scale above absolute maximum of %d instances",
+            violations.add("Region %s: Cannot scale above absolute maximum of %d instances".formatted(
                     action.region(), ABSOLUTE_MAX_INSTANCES));
         } else if (newCapacity > maxInstances) {
-            violations.add(String.format("Region %s: Cannot scale above policy maximum of %d instances",
+            violations.add("Region %s: Cannot scale above policy maximum of %d instances".formatted(
                     action.region(), maxInstances));
         }
 
         // Check scale step size
         if (Math.abs(action.delta()) > maxScaleStep) {
-            violations.add(String.format("Region %s: Scale step %d exceeds maximum step size of %d",
+            violations.add("Region %s: Scale step %d exceeds maximum step size of %d".formatted(
                     action.region(), Math.abs(action.delta()), maxScaleStep));
         }
 
         // Warning if scaling down more than 50%
         if (action.delta() < 0 && Math.abs(action.delta()) > currentCapacity / 2) {
-            warnings.add(String.format("Region %s: Large scale-in of %d instances (>50%% reduction)",
+            warnings.add("Region %s: Large scale-in of %d instances (>50%% reduction)".formatted(
                     action.region(), Math.abs(action.delta())));
         }
     }
@@ -139,7 +139,7 @@ public class GuardrailService {
 
         // Prevent massive scale-out in a single cycle
         if (totalDelta > 10) {
-            violations.add(String.format("Total scale-out of %d instances exceeds single-cycle limit of 10",
+            violations.add("Total scale-out of %d instances exceeds single-cycle limit of 10".formatted(
                     totalDelta));
         }
 
@@ -178,10 +178,10 @@ public class GuardrailService {
         int totalRecent = recentOuts + recentIns;
 
         if (totalRecent >= MAX_SCALE_ACTIONS_PER_HOUR) {
-            violations.add(String.format("Rate limit exceeded: %d scale actions in the last hour (max: %d)",
+            violations.add("Rate limit exceeded: %d scale actions in the last hour (max: %d)".formatted(
                     totalRecent, MAX_SCALE_ACTIONS_PER_HOUR));
         } else if (totalRecent >= MAX_SCALE_ACTIONS_PER_HOUR - 2) {
-            warnings.add(String.format("Approaching rate limit: %d/%d scale actions in the last hour",
+            warnings.add("Approaching rate limit: %d/%d scale actions in the last hour".formatted(
                     totalRecent, MAX_SCALE_ACTIONS_PER_HOUR));
         }
     }
@@ -214,7 +214,7 @@ public class GuardrailService {
         
         // This is a simplified check - in production would integrate with Cost Explorer
         if (projectedDailyIncrease.compareTo(dailyLimit.multiply(new BigDecimal("0.1"))) > 0) {
-            warnings.add(String.format("Scaling will increase daily costs by approximately $%.2f",
+            warnings.add("Scaling will increase daily costs by approximately $%.2f".formatted(
                     projectedDailyIncrease));
         }
     }
@@ -237,15 +237,15 @@ public class GuardrailService {
     private int getInt(Map<String, Object> map, String key, int defaultValue) {
         if (map == null || !map.containsKey(key)) return defaultValue;
         Object value = map.get(key);
-        if (value instanceof Number) return ((Number) value).intValue();
+        if (value instanceof Number number) return number.intValue();
         return defaultValue;
     }
 
     private BigDecimal getDecimal(Map<String, Object> map, String key) {
         if (map == null || !map.containsKey(key)) return null;
         Object value = map.get(key);
-        if (value instanceof BigDecimal) return (BigDecimal) value;
-        if (value instanceof Number) return BigDecimal.valueOf(((Number) value).doubleValue());
+        if (value instanceof BigDecimal decimal) return decimal;
+        if (value instanceof Number number) return BigDecimal.valueOf(number.doubleValue());
         return null;
     }
 

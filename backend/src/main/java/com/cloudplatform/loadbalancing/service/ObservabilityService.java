@@ -175,14 +175,14 @@ public class ObservabilityService {
 
         // Check latency SLO
         if (metrics.latencyP99 > latencyP99Target) {
-            violations.add(String.format("Latency P99 %dms exceeds target %dms", 
+            violations.add("Latency P99 %dms exceeds target %dms".formatted(
                     metrics.latencyP99, latencyP99Target));
             healthy = false;
         }
 
         // Check error rate SLO
         if (metrics.errorRate.compareTo(maxErrorRate) > 0) {
-            violations.add(String.format("Error rate %.2f%% exceeds target %.2f%%",
+            violations.add("Error rate %.2f%% exceeds target %.2f%%".formatted(
                     metrics.errorRate.multiply(BigDecimal.valueOf(100)),
                     maxErrorRate.multiply(BigDecimal.valueOf(100))));
             healthy = false;
@@ -190,7 +190,7 @@ public class ObservabilityService {
 
         // Check minimum healthy instances
         if (metrics.totalHealthyInstances < minHealthyInstances) {
-            violations.add(String.format("Healthy instances %d below minimum %d",
+            violations.add("Healthy instances %d below minimum %d".formatted(
                     metrics.totalHealthyInstances, minHealthyInstances));
             healthy = false;
         }
@@ -389,15 +389,15 @@ public class ObservabilityService {
     private int getIntOrDefault(Map<String, Object> map, String key, int defaultValue) {
         if (map == null || !map.containsKey(key)) return defaultValue;
         Object value = map.get(key);
-        if (value instanceof Number) return ((Number) value).intValue();
+        if (value instanceof Number number) return number.intValue();
         return defaultValue;
     }
 
     private BigDecimal getDecimalOrDefault(Map<String, Object> map, String key, BigDecimal defaultValue) {
         if (map == null || !map.containsKey(key)) return defaultValue;
         Object value = map.get(key);
-        if (value instanceof BigDecimal) return (BigDecimal) value;
-        if (value instanceof Number) return BigDecimal.valueOf(((Number) value).doubleValue());
+        if (value instanceof BigDecimal decimal) return decimal;
+        if (value instanceof Number number) return BigDecimal.valueOf(number.doubleValue());
         return defaultValue;
     }
 

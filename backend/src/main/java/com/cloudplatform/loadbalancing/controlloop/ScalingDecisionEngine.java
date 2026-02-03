@@ -89,7 +89,7 @@ public class ScalingDecisionEngine {
                 currentHealthy, minInstances, policy)) {
             
             action = ScalingAction.SCALE_IN;
-            reason = String.format("Low CPU utilization: %.1f%% (threshold: %.1f%%)", 
+            reason = "Low CPU utilization: %.1f%% (threshold: %.1f%%)".formatted(
                     avgCpu, cpuScaleInThreshold);
             
             // Calculate scale-in per region (conservative)
@@ -220,14 +220,14 @@ public class ScalingDecisionEngine {
         List<String> reasons = new ArrayList<>();
         
         if (cpu.compareTo(threshold) > 0) {
-            reasons.add(String.format("High CPU: %.1f%% (threshold: %.1f%%)", cpu, threshold));
+            reasons.add("High CPU: %.1f%% (threshold: %.1f%%)".formatted(cpu, threshold));
         }
         if (errorRate.compareTo(new BigDecimal("0.01")) > 0) {
-            reasons.add(String.format("Elevated errors: %.2f%%", 
+            reasons.add("Elevated errors: %.2f%%".formatted(
                     errorRate.multiply(BigDecimal.valueOf(100))));
         }
         if (latencyP99 > 500) {
-            reasons.add(String.format("High latency: %dms P99", latencyP99));
+            reasons.add("High latency: %dms P99".formatted(latencyP99));
         }
 
         return String.join("; ", reasons);
@@ -251,15 +251,15 @@ public class ScalingDecisionEngine {
     private int getInt(Map<String, Object> map, String key, int defaultValue) {
         if (map == null || !map.containsKey(key)) return defaultValue;
         Object value = map.get(key);
-        if (value instanceof Number) return ((Number) value).intValue();
+        if (value instanceof Number number) return number.intValue();
         return defaultValue;
     }
 
     private BigDecimal getDecimal(Map<String, Object> map, String key, BigDecimal defaultValue) {
         if (map == null || !map.containsKey(key)) return defaultValue;
         Object value = map.get(key);
-        if (value instanceof BigDecimal) return (BigDecimal) value;
-        if (value instanceof Number) return BigDecimal.valueOf(((Number) value).doubleValue());
+        if (value instanceof BigDecimal decimal) return decimal;
+        if (value instanceof Number number) return BigDecimal.valueOf(number.doubleValue());
         return defaultValue;
     }
 }

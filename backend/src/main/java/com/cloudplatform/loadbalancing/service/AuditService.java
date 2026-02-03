@@ -130,7 +130,7 @@ public class AuditService {
                     .cycleId(cycleId)
                     .actionType(scaleOut ? AuditLog.ActionType.SCALE_OUT : AuditLog.ActionType.SCALE_IN)
                     .actionCategory(AuditLog.ActionCategory.SCALING)
-                    .description(String.format("%s: %d -> %d instances. Reason: %s",
+                    .description("%s: %d -> %d instances. Reason: %s".formatted(
                             scaleOut ? "Scale out" : "Scale in",
                             previousCapacity, newCapacity, reason))
                     .status(success ? AuditLog.ActionStatus.COMPLETED : AuditLog.ActionStatus.FAILED)
@@ -200,7 +200,7 @@ public class AuditService {
                     .awsAccountId(service.getAwsAccount().getId())
                     .actionType(AuditLog.ActionType.TRAFFIC_SHIFT)
                     .actionCategory(AuditLog.ActionCategory.TRAFFIC)
-                    .description(String.format("Traffic shift %s->%s: %d%% -> %d%%. Reason: %s",
+                    .description("Traffic shift %s->%s: %d%% -> %d%%. Reason: %s".formatted(
                             sourceRegion, targetRegion, previousWeight, newWeight, reason))
                     .status(success ? AuditLog.ActionStatus.COMPLETED : AuditLog.ActionStatus.FAILED)
                     .decisionDetails(Map.of(

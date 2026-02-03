@@ -131,7 +131,7 @@ public class BlueprintService {
                 );
             }
 
-            Image ami = response.images().get(0);
+            Image ami = response.images().getFirst();
             return Map.of(
                     "valid", true,
                     "amiId", blueprint.getAmiId(),
