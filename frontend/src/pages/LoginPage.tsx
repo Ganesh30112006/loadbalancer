@@ -40,10 +40,10 @@ export function LoginPage() {
   };
 
   const features = [
-    { icon: CloudIcon, title: 'Multi-Account Management', desc: 'Manage infrastructure across multiple AWS accounts' },
-    { icon: CpuChipIcon, title: 'Intelligent Auto-Scaling', desc: 'ML-powered scaling decisions with guardrails' },
-    { icon: GlobeAltIcon, title: 'Global Traffic Management', desc: 'Route 53 integration for multi-region failover' },
-    { icon: ChartBarIcon, title: 'Real-time Observability', desc: 'CloudWatch metrics and custom dashboards' },
+    { icon: CloudIcon, title: 'Multi-Account Control', desc: 'Operate AWS accounts from one control plane' },
+    { icon: CpuChipIcon, title: 'Adaptive Auto-Scaling', desc: 'Guardrail-based scaling with predictive signals' },
+    { icon: GlobeAltIcon, title: 'Global Traffic Routing', desc: 'Route 53 failover across regions' },
+    { icon: ChartBarIcon, title: 'Live Observability', desc: 'CloudWatch telemetry with focused dashboards' },
   ];
 
   return (
@@ -86,8 +86,7 @@ export function LoginPage() {
             <span className="text-indigo-400">at Scale</span>
           </h2>
           <p className="text-slate-400 text-lg mb-12 max-w-md">
-            Enterprise-grade control plane for managing ALB, Auto Scaling Groups, 
-            Route 53, and CloudWatch across your entire organization.
+            Enterprise control plane for ALB, Auto Scaling, Route 53, and CloudWatch.
           </p>
 
           {/* Feature List */}
